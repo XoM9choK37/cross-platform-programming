@@ -8,8 +8,6 @@ class GraphTest01 extends Frame {
     setVisible(true);
   }
   public void paint(Graphics g) {
-    Dimension d = getSize();
-    int dx = d.width / 20, dy = d.height / 20;
     g.drawLine(60, 60, 150, 250);
     g.drawLine(30, 30, 100, 200);
     g.drawRect(20, 20, 300, 400);
@@ -27,4 +25,3 @@ class GraphTest01 extends Frame {
     });
   }
 }
-
