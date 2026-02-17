@@ -1,0 +1,75 @@
+@startuml Two Interfaces
+interface IDeviceBasic {
+    +getManufacturer(): String
+    +setManufacturer(manufacturer: String): void
+    +getPrice(): float
+    +setPrice(price: float): void
+    +getSerialNumber(): String
+    +setSerialNumber(serialNumber: String): void
+    +toString(): String
+    +equals(obj: Object): boolean
+    +hashCode(): int
+}
+
+interface IDeviceOperations {
+    +replace(): void
+    +detect(): void
+    +installDriver(): void
+    +deleteDriver(): void
+}
+
+abstract class BaseDevice {
+    -manufacturer: String
+    -price: float
+    -serialNumber: String
+    +BaseDevice()
+    +BaseDevice(manufacturer: String, price: float, serialNumber: String)
+    +getManufacturer(): String
+    +setManufacturer(manufacturer: String): void
+    +getPrice(): float
+    +setPrice(price: float): void
+    +getSerialNumber(): String
+    +setSerialNumber(serialNumber: String): void
+    +replace(): void
+    +installDriver(): void
+    +deleteDriver(): void
+    +toString(): String
+    +equals(obj: Object): boolean
+    +hashCode(): int
+}
+
+class Monitor {
+    -resolutionX: int
+    -resolutionY: int
+    +Monitor()
+    +Monitor(manufacturer: String, price: float, serialNumber: String, resolutionX: int, resolutionY: int)
+    +getResolutionX(): int
+    +setResolutionX(resolutionX: int): void
+    +getResolutionY(): int
+    +setResolutionY(resolutionY: int): void
+    +detect(): void
+    +toString(): String
+}
+
+class EthernetAdapter {
+    -speed: int
+    -mac: String
+    +EthernetAdapter()
+    +EthernetAdapter(manufacturer: String, price: float, serialNumber: String, speed: int, mac: String)
+    +getSpeed(): int
+    +setSpeed(speed: int): void
+    +getMAC(): String
+    +setMAC(mac: String): void
+    +detect(): void
+    +toString(): String
+}
+
+IDeviceBasic <|.. BaseDevice
+IDeviceOperations <|.. BaseDevice
+BaseDevice <|-- Monitor
+BaseDevice <|-- EthernetAdapter
+
+note top of IDeviceBasic : Интерфейс с основными\nполями и методами
+note top of IDeviceOperations : Интерфейс с операциями\nнад устройствами
+note bottom of BaseDevice : Абстрактный класс реализует\nоба интерфейса
+@enduml
