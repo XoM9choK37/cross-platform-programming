@@ -9,7 +9,7 @@ public class GraphTest01 extends Frame {
         super(title);
         setBounds(0, 0, 800, 800);
         setBackground(Color.BLACK); 
-        drawPattern(20000, 10, 11, 30);
+        drawPattern(20000, 10, 11, 20);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent ev) {
                 System.exit(0);
