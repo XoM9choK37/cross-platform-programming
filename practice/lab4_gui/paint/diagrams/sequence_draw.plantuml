@@ -1,0 +1,80 @@
+@startuml Sequence Draw
+title Диаграмма последовательности - Рисование линии (Drawing Mode)
+
+' Участники
+actor User
+participant "PaintView" as View
+participant "Canvas" as Canvas
+participant "PaintController" as Controller
+participant "PaintModel" as Model
+participant "DrawableShape" as Shape
+
+' Активация участников
+User -> View: Запуск приложения
+View -> Controller: Создание контроллера
+Controller -> Model: Получение данных
+Controller -> View: Регистрация слушателей
+
+== Рисование линии ==
+
+User -> Canvas: Нажатие кнопки мыши (mousePressed)
+Canvas -> Controller: Событие mousePressed
+activate Controller
+Controller -> Controller: Сохранить prevX, prevY
+Controller --> Canvas: 
+deactivate Controller
+
+User -> Canvas: Перетаскивание мыши (mouseDragged)
+Canvas -> Controller: Событие mouseDragged
+activate Controller
+
+Controller -> Model: getDrawingMode()
+Model --> Controller: true
+
+alt Drawing Mode = true
+    Controller -> Model: getCurrentColor()
+    Model --> Controller: Color
+    
+    Controller -> Model: getCurrentBrushSize()
+    Model --> Controller: int size
+    
+    Controller -> Model: addShape(line, color, size)
+    activate Model
+    Model -> Shape: Создать DrawableShape
+    Shape --> Model: 
+    Model -> Model: Добавить в список shapes
+    deactivate Model
+    
+    Controller -> Canvas: Немедленная отрисовка (getGraphics)
+    activate Canvas
+    Canvas -> Canvas: drawLine()
+    deactivate Canvas
+    
+    Controller -> Controller: Обновить prevX, prevY
+end
+
+Controller --> Canvas: 
+deactivate Controller
+
+User -> Canvas: Отпускание кнопки мыши (mouseReleased)
+Canvas -> Controller: Событие mouseReleased
+Controller --> Canvas: Конец рисования
+
+== Перерисовка окна ==
+
+User -> View: Изменение размера окна
+View -> Canvas: Вызов paintComponent()
+activate Canvas
+Canvas -> Model: getShapes()
+Model --> Canvas: List<DrawableShape>
+
+loop Для каждой фигуры
+    Canvas -> Shape: draw(g2d)
+    activate Shape
+    Shape -> Canvas: Отрисовка с собственным цветом
+    deactivate Shape
+end
+
+deactivate Canvas
+
+@enduml

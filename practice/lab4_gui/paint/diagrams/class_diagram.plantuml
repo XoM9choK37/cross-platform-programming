@@ -1,0 +1,143 @@
+@startuml Class Diagram
+title Диаграмма классов - Paint Application MVC
+
+' Определение цветовой схемы
+skinparam class {
+    BackgroundColor LightYellow
+    ArrowColor Black
+    BorderColor Black
+}
+
+skinparam interface {
+    BackgroundColor LightBlue
+    BorderColor Blue
+}
+
+class Main {
+    +main(String[] args)
+}
+
+class PaintModel {
+    -Color currentColor
+    -int currentBrushSize
+    -boolean drawingMode
+    -List<DrawableShape> shapes
+    +getCurrentColor()
+    +setCurrentColor(Color)
+    +getCurrentBrushSize()
+    +setCurrentBrushSize(int)
+    +isDrawingMode()
+    +setDrawingMode(boolean)
+    +getShapes()
+    +addShape(Shape, Color, float)
+    +clearShapes()
+    +addPattern(int, double, int, double, int, int, Color)
+}
+
+class DrawableShape {
+    -Shape shape
+    -Color color
+    -float strokeWidth
+    +draw(Graphics2D)
+}
+
+class PaintView {
+    -PaintModel model
+    -Canvas canvas
+    -JButton blackBtn
+    -JButton redBtn
+    -JButton greenBtn
+    -JButton blueBtn
+    -JButton yellowBtn
+    -JToggleButton drawModeBtn
+    -JToggleButton shapeModeBtn
+    -JButton clearBtn
+    -JRadioButton smallBtn
+    -JRadioButton mediumBtn
+    -JRadioButton largeBtn
+    -JRadioButton extraLargeBtn
+    -JSlider sizeSlider
+    +PaintView(PaintModel)
+    +getCanvas()
+    +getBlackBtn()
+    +getRedBtn()
+    +getGreenBtn()
+    +getBlueBtn()
+    +getYellowBtn()
+    +getDrawModeBtn()
+    +getShapeModeBtn()
+    +getClearBtn()
+    +getSmallBtn()
+    +getMediumBtn()
+    +getLargeBtn()
+    +getExtraLargeBtn()
+    +getSizeSlider()
+    +refreshCanvas()
+    +showShapeDialog(int, int, PaintController)
+    -createSizePanel()
+}
+
+class ShapeDialog {
+    -JTextField stepsField
+    -JTextField angleField
+    -JTextField divisorField
+    -JTextField stepField
+    -JTextField redField
+    -JTextField greenField
+    -JTextField blueField
+    -JPanel colorCanvas
+    -JSlider brightnessSlider
+    -JPanel colorPreview
+    -Color selectedColor
+    -int clickX
+    -int clickY
+    -PaintController controller
+    +ShapeDialog(JFrame, int, int, PaintController)
+    -setupColorListeners()
+    -updateColorFromCanvas(int, int, int)
+    -updateColorFields()
+}
+
+class PaintController {
+    -PaintModel model
+    -PaintView view
+    -int prevX
+    -int prevY
+    +PaintController(PaintModel, PaintView)
+    -setupMouseListeners()
+    -updateSizeButtons(int)
+    +addPattern(int, double, int, double, int, int, Color)
+    +getCurrentColor()
+}
+
+class Canvas {
+    +paintComponent(Graphics)
+}
+
+' Отношения между классами
+Main --> PaintModel : creates
+Main --> PaintView : creates
+Main --> PaintController : creates
+
+PaintView *-- Canvas : contains
+PaintView --> PaintModel : uses
+PaintView --> PaintController : uses (for dialog)
+
+PaintController --> PaintModel : controls
+PaintController --> PaintView : updates
+
+PaintModel o-- DrawableShape : contains
+
+ShapeDialog --> PaintController : notifies
+ShapeDialog ..> PaintModel : updates via controller
+
+Canvas --> PaintModel : reads
+
+' Легенда
+note top of Main : Точка входа в приложение
+note top of PaintModel : Модель - хранит данные и бизнес-логику
+note top of PaintView : Представление - отображает UI
+note top of PaintController : Контроллер - обрабатывает действия пользователя
+note top of DrawableShape : Класс для хранения фигур с атрибутами
+
+@enduml

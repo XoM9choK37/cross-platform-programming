@@ -1,0 +1,83 @@
+@startuml Sequence Shape
+title Диаграмма последовательности - Построение параметрической фигуры
+
+' Участники
+actor User
+participant "PaintView" as View
+participant "Canvas" as Canvas
+participant "PaintController" as Controller
+participant "PaintModel" as Model
+participant "ShapeDialog" as Dialog
+participant "DrawableShape" as Shape
+
+== Переключение в режим фигур ==
+
+User -> View: Клик по кнопке "Фигуры"
+View -> Controller: Событие ActionEvent
+activate Controller
+Controller -> Model: setDrawingMode(false)
+Controller --> View: Обновить UI
+deactivate Controller
+
+== Выбор места для фигуры ==
+
+User -> Canvas: Клик мыши (mouseClicked)
+Canvas -> Controller: Событие mouseClicked
+activate Controller
+
+Controller -> Model: isDrawingMode()
+Model --> Controller: false
+
+alt Drawing Mode = false
+    Controller -> View: showShapeDialog(x, y, Controller)
+    View -> Dialog: Создать диалог
+    Dialog --> User: Отображение диалога
+    
+    User -> Dialog: Выбор цвета на полотне
+    Dialog -> Dialog: updateColorFromCanvas()
+    Dialog -> Dialog: updateColorFields()
+    
+    User -> Dialog: Ввод параметров (шаги, угол, и т.д.)
+    
+    User -> Dialog: Клик "Построить"
+    Dialog -> Controller: addPattern(параметры)
+    
+    Controller -> Model: addPattern(steps, angle, divisor, step, x, y, color)
+    activate Model
+    
+    loop Для каждого шага
+        Model -> Model: Расчет координат
+        Model -> Shape: Создать DrawableShape
+        Shape --> Model: 
+        Model -> Model: Добавить в список
+    end
+    
+    deactivate Model
+    
+    Controller -> View: refreshCanvas()
+    View -> Canvas: repaint()
+    
+    Dialog -> Dialog: dispose()
+end
+
+deactivate Controller
+
+== Отрисовка фигуры ==
+
+View -> Canvas: paintComponent()
+activate Canvas
+Canvas -> Model: getShapes()
+Model --> Canvas: List<DrawableShape>
+
+loop Для всех фигур (включая новую)
+    Canvas -> Shape: draw(g2d)
+    activate Shape
+    Shape -> Canvas: Отрисовка
+    deactivate Shape
+end
+
+deactivate Canvas
+
+User -> Canvas: Видит новую фигуру
+
+@enduml

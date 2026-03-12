@@ -52,4 +52,3 @@ public class GraphTest01 extends Frame {
         new GraphTest01("Картинка из примитивных линий");
     }
 }
-
