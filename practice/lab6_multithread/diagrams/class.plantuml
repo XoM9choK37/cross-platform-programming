@@ -1,0 +1,62 @@
+@startuml Class
+skinparam classAttributeIconSize 0
+
+class CarSharingSystem {
+    - availableCars: int
+    - totalCars: int
+    - stats: Map<Integer, Integer>
+    - totalClients: int
+    + CarSharingSystem(totalCars: int)
+    + synchronized rentCar(clientId: int): boolean
+    + synchronized returnCar(clientId: int): void
+    + synchronized addToStats(hours: int): void
+    + synchronized incrementClientCount(): void
+    + printStats(): void
+}
+
+class CarClient extends Thread {
+    - system: CarSharingSystem
+    - clientId: int
+    - rentHours: int
+    + CarClient(system: CarSharingSystem, clientId: int)
+    + void run()
+}
+
+class FirstGenerator extends Thread {
+    - number: int
+    + void run()
+    + int getNumber()
+}
+
+class SleepWorker extends Thread {
+    - number: int
+    - result: long
+    - startTime: long
+    - endTime: long
+    + SleepWorker(number: int)
+    + void run()
+    + long getResult()
+    + long getDuration()
+}
+
+class YieldWorker extends Thread {
+    - number: int
+    - result: long
+    - startTime: long
+    - endTime: long
+    + YieldWorker(number: int)
+    + void run()
+    + long getResult()
+    + long getDuration()
+}
+
+class Main {
+    + void main(String[] args)
+}
+
+Main --> CarSharingSystem
+Main --> FirstGenerator
+Main --> SleepWorker
+Main --> YieldWorker
+CarSharingSystem --> CarClient
+@enduml

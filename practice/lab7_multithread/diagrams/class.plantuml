@@ -1,0 +1,41 @@
+@startuml Class
+skinparam classAttributeIconSize 0
+
+class BankQueue {
+    - queue: BlockingQueue<Client>
+    - servedCount: AtomicInteger
+    - queueLengths: List<Integer>
+    - running: boolean
+    + BankQueue(maxSize: int)
+    + void startSimulation(durationMin: int, arrivalIntervalAvgMin: int)
+    + void stopSimulation()
+    + void recordQueueLength()
+    + void clientServed()
+    + boolean isRunning()
+}
+
+class Cashier extends Thread {
+    - cashierId: int
+    - bank: BankQueue
+    - serviceTimeAvgMin: int
+    + Cashier(id: int, bank: BankQueue, serviceTimeAvgMin: int)
+    + void run()
+}
+
+class Client {
+    - static int counter
+    - int id
+    - int arrivalTimeMin
+    + Client(arrivalTimeMin: int)
+    + int getId()
+    + int getArrivalTime()
+}
+
+class Main {
+    + void main(String[] args)
+}
+
+BankQueue --> Cashier
+BankQueue --> Client
+Main --> BankQueue
+@enduml

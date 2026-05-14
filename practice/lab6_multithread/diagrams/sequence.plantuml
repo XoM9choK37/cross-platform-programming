@@ -1,0 +1,50 @@
+@startuml Sequence
+title Лабораторная №6 - Временная диаграмма
+
+participant "Main" as Main
+participant "Generator" as Gen
+participant "SleepWorker" as SW
+participant "YieldWorker" as YW
+participant "CarClient (x24)" as CC
+
+== Join этап ==
+Main -> Gen: start()
+activate Gen
+Gen -> Gen: generate random number
+Gen --> Main: завершение
+deactivate Gen
+Main -> Main: number = Gen.getNumber()
+
+== Соревнование sleep vs yield ==
+Main -> SW: start() with number
+activate SW
+Main -> YW: start() with number
+activate YW
+
+SW -> SW: calculate sum of squares\nfor i=1..number\n  sleep(1)
+note right: sleep(1) уступает процессор
+YW -> YW: calculate sum of squares\nfor i=1..number\n  yield()
+note left: yield() добровольно уступает
+
+alt Кто быстрее
+    SW --> Main: завершился
+    deactivate SW
+    YW --> Main: завершился
+    deactivate YW
+end
+Main -> Main: определить победителя по времени
+
+== Каршеринг (параллельно с соревнованием? Нет, последовательно) ==
+loop hour = 1 to 24
+    Main -> CC: new + start()
+    activate CC
+    CC -> CC: rentCar() (wait если нет машин)
+    CC -> CC: sleep(rentHours * 100L)
+    CC -> CC: returnCar() (notify)
+    CC --> Main: завершение
+    deactivate CC
+    Main -> Main: sleep(100L) - интервал 1 час модельного времени
+end
+
+Main -> Main: printStats()
+@enduml
